@@ -1,0 +1,81 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(23, 23, 23, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.header-interno {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+
+  span {
+    color: var(--lima);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  a {
+    font-weight: 600;
+    color: var(--texto-suave);
+    transition: color 0.15s;
+
+    &:hover,
+    &.activo {
+      color: var(--lima);
+    }
+  }
+}
+
+.btn-carrito {
+  position: relative;
+  font-size: 1.5rem;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  background: var(--rosado);
+  color: var(--negro);
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 6px;
+}
+
+.footer {
+  border-top: 1px solid var(--gris-claro);
+  padding: 24px 0;
+  margin-top: 60px;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}

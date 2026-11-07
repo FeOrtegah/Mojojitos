@@ -1,1 +1,118 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --lima: #b7e84b;
+  --rosado: #ff6b9a;
+  --naranjo: #ff8b45;
+  --negro: #171717;
+  --gris: #242424;
+  --gris-claro: #3a3a3a;
+  --texto: #f5f5f5;
+  --texto-suave: #a8a8a8;
+  --radio: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: var(--negro);
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.btn-lima {
+  background: var(--lima);
+  color: var(--negro);
+}
+
+.btn-rosado {
+  background: var(--rosado);
+  color: var(--negro);
+}
+
+.btn-borde {
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--gris-claro);
+}
+
+.precio {
+  color: var(--naranjo);
+  font-weight: 800;
+}
+
+.titulo-pagina {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 40px 0 24px;
+
+  span {
+    color: var(--lima);
+  }
+}
+
+.cantidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--gris-claro);
+  border-radius: 999px;
+  padding: 4px;
+
+  button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--negro);
+    color: var(--lima);
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  span {
+    min-width: 20px;
+    text-align: center;
+    font-weight: 600;
+  }
+}

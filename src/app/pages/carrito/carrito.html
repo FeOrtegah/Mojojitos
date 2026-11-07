@@ -1,0 +1,56 @@
+<section class="contenedor">
+  <h1 class="titulo-pagina">Tu <span>carrito</span></h1>
+
+  @if (carrito.items().length === 0) {
+    <div class="vacio">
+      <span>🍃</span>
+      <p>Tu carrito está vacío.</p>
+      <a routerLink="/" class="btn btn-lima">Ver menú</a>
+    </div>
+  } @else {
+    <div class="layout">
+      <ul class="lista">
+        @for (item of carrito.items(); track item.producto.id) {
+          <li class="item">
+            <div class="miniatura">🍹</div>
+
+            <div class="detalle">
+              <h3>{{ item.producto.nombre }}</h3>
+              <span class="unitario">{{ item.producto.precio | clp }} c/u</span>
+            </div>
+
+            <div class="cantidad">
+              <button (click)="carrito.cambiarCantidad(item.producto.id, -1)">−</button>
+              <span>{{ item.cantidad }}</span>
+              <button (click)="carrito.cambiarCantidad(item.producto.id, 1)">+</button>
+            </div>
+
+            <span class="precio">{{ item.producto.precio * item.cantidad | clp }}</span>
+
+            <button class="quitar" (click)="carrito.quitar(item.producto.id)" aria-label="Quitar">✕</button>
+          </li>
+        }
+      </ul>
+
+      <aside class="resumen">
+        <h2>Resumen</h2>
+        <div class="fila">
+          <span>Subtotal</span>
+          <span>{{ carrito.subtotal() | clp }}</span>
+        </div>
+        <div class="fila">
+          <span>Despacho</span>
+          <span>{{ despacho > 0 ? (despacho | clp) : 'Gratis' }}</span>
+        </div>
+        <div class="fila total">
+          <span>Total</span>
+          <span class="precio">{{ carrito.subtotal() + despacho | clp }}</span>
+        </div>
+
+        <a routerLink="/checkout" class="btn btn-lima">Continuar con el pedido</a>
+        <a routerLink="/" class="btn btn-borde">Seguir comprando</a>
+        <button class="vaciar" (click)="carrito.vaciar()">Vaciar carrito</button>
+      </aside>
+    </div>
+  }
+</section>

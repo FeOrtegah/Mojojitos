@@ -1,0 +1,126 @@
+.vacio {
+  text-align: center;
+  padding: 60px 0;
+
+  span {
+    font-size: 4rem;
+  }
+
+  p {
+    color: var(--texto-suave);
+    margin: 12px 0 24px;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: start;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto auto auto;
+  align-items: center;
+  gap: 16px;
+  background: var(--gris);
+  border: 1px solid var(--gris-claro);
+  border-radius: var(--radio);
+  padding: 16px;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 48px 1fr auto;
+
+    .precio {
+      grid-column: 2;
+    }
+  }
+}
+
+.miniatura {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, rgba(183, 232, 75, 0.2), rgba(255, 139, 69, 0.2));
+}
+
+.detalle h3 {
+  font-size: 1rem;
+}
+
+.unitario {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.quitar {
+  background: none;
+  border: none;
+  color: var(--texto-suave);
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--rosado);
+  }
+}
+
+.resumen {
+  background: var(--gris);
+  border: 1px solid var(--gris-claro);
+  border-radius: var(--radio);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 90px;
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  color: var(--texto-suave);
+
+  &.total {
+    color: var(--texto);
+    font-weight: 600;
+    font-size: 1.15rem;
+    border-top: 1px solid var(--gris-claro);
+    padding-top: 12px;
+    margin-bottom: 8px;
+  }
+}
+
+.vaciar {
+  background: none;
+  border: none;
+  color: var(--texto-suave);
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--rosado);
+  }
+}

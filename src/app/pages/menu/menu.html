@@ -1,0 +1,50 @@
+<section class="hero">
+  <div class="contenedor">
+    <h1>Mojitos <span class="lima">frescos</span>,<br />directo a tu <span class="rosado">puerta</span></h1>
+    <p>Elige tus favoritos, arma tu pedido y lo confirmas por WhatsApp en un clic.</p>
+    <a href="#menu" class="btn btn-lima">Ver menú</a>
+  </div>
+</section>
+
+<section id="menu" class="contenedor">
+  <h2 class="titulo-pagina">Nuestro <span>menú</span></h2>
+
+  <div class="grid">
+    @for (producto of productos; track producto.id) {
+      <article class="card">
+        <div class="imagen">
+          @if (producto.imagen) {
+            <img [src]="producto.imagen" [alt]="producto.nombre" />
+          } @else {
+            <span>🍹</span>
+          }
+        </div>
+
+        <div class="info">
+          <h3>{{ producto.nombre }}</h3>
+          <p>{{ producto.descripcion }}</p>
+
+          <div class="pie">
+            <span class="precio">{{ producto.precio | clp }}</span>
+
+            @if (cantidadEnCarrito(producto.id) > 0) {
+              <div class="cantidad">
+                <button (click)="carrito.cambiarCantidad(producto.id, -1)">−</button>
+                <span>{{ cantidadEnCarrito(producto.id) }}</span>
+                <button (click)="carrito.cambiarCantidad(producto.id, 1)">+</button>
+              </div>
+            } @else {
+              <button class="btn btn-lima" (click)="carrito.agregar(producto)">Agregar</button>
+            }
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+
+  @if (carrito.cantidadTotal() > 0) {
+    <a routerLink="/carrito" class="btn btn-rosado flotante">
+      Ver carrito ({{ carrito.cantidadTotal() }}) · {{ carrito.subtotal() | clp }}
+    </a>
+  }
+</section>
