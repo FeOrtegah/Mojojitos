@@ -2,14 +2,14 @@
   text-align: center;
   padding: 60px 0;
 
-  span {
-    font-size: 4rem;
-  }
-
   p {
     color: var(--texto-suave);
     margin: 12px 0 24px;
   }
+}
+
+.icono-vacio {
+  color: var(--lima);
 }
 
 .layout {
@@ -32,16 +32,17 @@
 
 .item {
   display: grid;
-  grid-template-columns: 56px 1fr auto auto auto;
+  grid-template-columns: 64px 1fr auto auto auto;
   align-items: center;
   gap: 16px;
   background: var(--gris);
   border: 1px solid var(--gris-claro);
   border-radius: var(--radio);
-  padding: 16px;
+  padding: 14px 16px;
 
   @media (max-width: 560px) {
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: 56px 1fr auto;
+    row-gap: 10px;
 
     .precio {
       grid-column: 2;
@@ -50,17 +51,31 @@
 }
 
 .miniatura {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
-  display: grid;
-  place-items: center;
-  font-size: 1.8rem;
+  overflow: hidden;
   background: linear-gradient(135deg, rgba(183, 232, 75, 0.2), rgba(255, 139, 69, 0.2));
+
+  @media (max-width: 560px) {
+    width: 56px;
+    height: 56px;
+  }
 }
 
-.detalle h3 {
-  font-size: 1rem;
+.detalle {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+
+  h3 {
+    font-size: 1rem;
+  }
+}
+
+.sabores {
+  color: var(--lima);
+  font-size: 0.85rem;
 }
 
 .unitario {
@@ -69,10 +84,11 @@
 }
 
 .quitar {
+  display: grid;
+  place-items: center;
   background: none;
   border: none;
   color: var(--texto-suave);
-  font-size: 1rem;
   cursor: pointer;
 
   &:hover {
@@ -93,22 +109,32 @@
 
   h2 {
     font-size: 1.2rem;
-    margin-bottom: 4px;
   }
 }
 
 .fila {
   display: flex;
   justify-content: space-between;
-  color: var(--texto-suave);
 
   &.total {
-    color: var(--texto);
     font-weight: 600;
     font-size: 1.15rem;
-    border-top: 1px solid var(--gris-claro);
-    padding-top: 12px;
-    margin-bottom: 8px;
+  }
+}
+
+.nota-despacho {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--gris-claro);
+  padding-top: 12px;
+  margin-bottom: 8px;
+
+  app-icono {
+    color: var(--lima);
+    margin-top: 2px;
   }
 }
 

@@ -1,0 +1,57 @@
+<div class="fondo" (click)="cerrar.emit()"></div>
+
+<div class="modal" role="dialog" aria-modal="true">
+  <button class="btn-cerrar" (click)="cerrar.emit()" aria-label="Cerrar">
+    <app-icono nombre="cerrar" />
+  </button>
+
+  <h2>{{ promo().nombre }}</h2>
+  <p class="subtitulo">
+    Elige {{ promo().litros }} litros · <span class="precio">{{ promo().precio | clp }}</span>
+  </p>
+
+  <div class="progreso">
+    <div class="barra" [style.width.%]="(elegidos() / promo().litros) * 100"></div>
+  </div>
+  <p class="contador">{{ elegidos() }} de {{ promo().litros }} elegidos</p>
+
+  <ul class="lista">
+    @for (sabor of sabores; track sabor.id) {
+      <li [class.activo]="cantidad(sabor.id) > 0">
+        <div class="mini">
+          <app-mojito-ilustracion [color]="sabor.color" />
+        </div>
+        <div class="texto">
+          <strong>{{ sabor.nombre }}</strong>
+          <small>{{ sabor.descripcion }}</small>
+        </div>
+        <div class="cantidad">
+          <button
+            (click)="cambiar(sabor.id, -1)"
+            [disabled]="cantidad(sabor.id) === 0"
+            aria-label="Quitar"
+          >
+            <app-icono nombre="menos" [tamano]="16" />
+          </button>
+          <span>{{ cantidad(sabor.id) }}</span>
+          <button (click)="cambiar(sabor.id, 1)" [disabled]="completo()" aria-label="Agregar">
+            <app-icono nombre="mas" [tamano]="16" />
+          </button>
+        </div>
+      </li>
+    }
+  </ul>
+
+  <button class="btn btn-lima agregar" [disabled]="!completo()" (click)="agregar()">
+    <app-icono nombre="carrito" />
+    @if (completo()) {
+      Agregar al carrito
+    } @else {
+      {{
+        promo().litros - elegidos() === 1
+          ? 'Te falta 1'
+          : 'Te faltan ' + (promo().litros - elegidos())
+      }}
+    }
+  </button>
+</div>

@@ -3,49 +3,56 @@
 
   @if (carrito.items().length === 0) {
     <div class="vacio">
-      <span>🍃</span>
+      <span class="icono-vacio"><app-icono nombre="hoja" [tamano]="56" /></span>
       <p>Tu carrito está vacío.</p>
       <a routerLink="/" class="btn btn-lima">Ver menú</a>
     </div>
   } @else {
     <div class="layout">
       <ul class="lista">
-        @for (item of carrito.items(); track item.producto.id) {
+        @for (item of carrito.items(); track item.clave) {
           <li class="item">
-            <div class="miniatura">🍹</div>
+            <div class="miniatura">
+              <app-producto-imagen [producto]="item.producto" />
+            </div>
 
             <div class="detalle">
               <h3>{{ item.producto.nombre }}</h3>
+              @if (item.sabores?.length) {
+                <span class="sabores">{{ item.sabores!.join(' + ') }}</span>
+              }
               <span class="unitario">{{ item.producto.precio | clp }} c/u</span>
             </div>
 
             <div class="cantidad">
-              <button (click)="carrito.cambiarCantidad(item.producto.id, -1)">−</button>
+              <button (click)="carrito.cambiarCantidad(item.clave, -1)" aria-label="Quitar uno">
+                <app-icono nombre="menos" [tamano]="16" />
+              </button>
               <span>{{ item.cantidad }}</span>
-              <button (click)="carrito.cambiarCantidad(item.producto.id, 1)">+</button>
+              <button (click)="carrito.cambiarCantidad(item.clave, 1)" aria-label="Agregar uno">
+                <app-icono nombre="mas" [tamano]="16" />
+              </button>
             </div>
 
             <span class="precio">{{ item.producto.precio * item.cantidad | clp }}</span>
 
-            <button class="quitar" (click)="carrito.quitar(item.producto.id)" aria-label="Quitar">✕</button>
+            <button class="quitar" (click)="carrito.quitar(item.clave)" aria-label="Eliminar">
+              <app-icono nombre="cerrar" [tamano]="18" />
+            </button>
           </li>
         }
       </ul>
 
       <aside class="resumen">
         <h2>Resumen</h2>
-        <div class="fila">
-          <span>Subtotal</span>
-          <span>{{ carrito.subtotal() | clp }}</span>
-        </div>
-        <div class="fila">
-          <span>Despacho</span>
-          <span>{{ despacho > 0 ? (despacho | clp) : 'Gratis' }}</span>
-        </div>
         <div class="fila total">
-          <span>Total</span>
-          <span class="precio">{{ carrito.subtotal() + despacho | clp }}</span>
+          <span>Subtotal</span>
+          <span class="precio">{{ carrito.subtotal() | clp }}</span>
         </div>
+        <p class="nota-despacho">
+          <app-icono nombre="despacho" [tamano]="16" /> El despacho se calcula según tu dirección en
+          el siguiente paso.
+        </p>
 
         <a routerLink="/checkout" class="btn btn-lima">Continuar con el pedido</a>
         <a routerLink="/" class="btn btn-borde">Seguir comprando</a>

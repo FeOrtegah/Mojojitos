@@ -25,12 +25,25 @@ main {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.5rem;
   font-weight: 800;
+}
 
-  span {
-    color: var(--lima);
-  }
+.logo-icono {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--lima);
+  color: var(--negro);
+}
+
+.lima {
+  color: var(--lima);
 }
 
 .nav {
@@ -52,12 +65,12 @@ main {
 
 .btn-carrito {
   position: relative;
-  font-size: 1.5rem;
+  display: flex;
 }
 
 .badge {
   position: absolute;
-  top: -6px;
+  top: -8px;
   right: -12px;
   background: var(--rosado);
   color: var(--negro);
@@ -78,4 +91,11 @@ main {
   text-align: center;
   color: var(--texto-suave);
   font-size: 0.9rem;
+}
+
+.pie-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
 }

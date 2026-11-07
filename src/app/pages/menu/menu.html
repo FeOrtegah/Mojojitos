@@ -1,23 +1,33 @@
 <section class="hero">
-  <div class="contenedor">
-    <h1>Mojitos <span class="lima">frescos</span>,<br />directo a tu <span class="rosado">puerta</span></h1>
-    <p>Elige tus favoritos, arma tu pedido y lo confirmas por WhatsApp en un clic.</p>
-    <a href="#menu" class="btn btn-lima">Ver menú</a>
+  <div class="contenedor hero-interno">
+    <div class="hero-texto">
+      <span class="chip"
+        ><app-icono nombre="despacho" [tamano]="16" /> Despacho en Pudahuel y alrededores</span
+      >
+      <h1>
+        Mojitos <span class="lima">frescos</span>,<br />directo a tu
+        <span class="rosado">puerta</span>
+      </h1>
+      <p>Elige tus sabores, arma tu pedido y lo confirmas por WhatsApp en un clic.</p>
+      <a href="#sabores" class="btn btn-lima"
+        >Ver menú <app-icono nombre="flecha" [tamano]="18"
+      /></a>
+    </div>
+    <div class="hero-ilustracion">
+      <app-mojito-ilustracion color="#ff6b9a" [vasos]="3" />
+    </div>
   </div>
 </section>
 
-<section id="menu" class="contenedor">
-  <h2 class="titulo-pagina">Nuestro <span>menú</span></h2>
+<section id="sabores" class="contenedor">
+  <h2 class="titulo-pagina">Nuestros <span>sabores</span></h2>
 
   <div class="grid">
-    @for (producto of productos; track producto.id) {
+    @for (producto of sabores; track producto.id) {
       <article class="card">
         <div class="imagen">
-          @if (producto.imagen) {
-            <img [src]="producto.imagen" [alt]="producto.nombre" />
-          } @else {
-            <span>🍹</span>
-          }
+          <app-producto-imagen [producto]="producto" />
+          <span class="litros">1 litro</span>
         </div>
 
         <div class="info">
@@ -27,24 +37,70 @@
           <div class="pie">
             <span class="precio">{{ producto.precio | clp }}</span>
 
-            @if (cantidadEnCarrito(producto.id) > 0) {
+            @if (carrito.cantidadDe(producto.id) > 0) {
               <div class="cantidad">
-                <button (click)="carrito.cambiarCantidad(producto.id, -1)">−</button>
-                <span>{{ cantidadEnCarrito(producto.id) }}</span>
-                <button (click)="carrito.cambiarCantidad(producto.id, 1)">+</button>
+                <button (click)="carrito.cambiarCantidad(producto.id, -1)" aria-label="Quitar uno">
+                  <app-icono nombre="menos" [tamano]="16" />
+                </button>
+                <span>{{ carrito.cantidadDe(producto.id) }}</span>
+                <button (click)="carrito.cambiarCantidad(producto.id, 1)" aria-label="Agregar uno">
+                  <app-icono nombre="mas" [tamano]="16" />
+                </button>
               </div>
             } @else {
-              <button class="btn btn-lima" (click)="carrito.agregar(producto)">Agregar</button>
+              <button class="btn btn-lima" (click)="carrito.agregar(producto)">
+                <app-icono nombre="mas" [tamano]="16" /> Agregar
+              </button>
             }
           </div>
         </div>
       </article>
     }
   </div>
-
-  @if (carrito.cantidadTotal() > 0) {
-    <a routerLink="/carrito" class="btn btn-rosado flotante">
-      Ver carrito ({{ carrito.cantidadTotal() }}) · {{ carrito.subtotal() | clp }}
-    </a>
-  }
 </section>
+
+<section id="promociones" class="contenedor">
+  <h2 class="titulo-pagina">Promo<span>ciones</span></h2>
+
+  <div class="grid-promos">
+    @for (promo of promociones; track promo.id) {
+      <article class="card promo">
+        <div class="imagen">
+          <app-producto-imagen [producto]="promo" />
+          <span class="litros promo-badge"
+            ><app-icono nombre="estrella" [tamano]="14" /> {{ promo.etiqueta }}</span
+          >
+        </div>
+
+        <div class="info">
+          <h3>{{ promo.nombre }}</h3>
+          <p>{{ promo.litros }} litros por {{ promo.precio | clp }}. {{ promo.descripcion }}</p>
+
+          <div class="pie">
+            <span class="precio">{{ promo.precio | clp }}</span>
+            <button class="btn btn-rosado" (click)="promoAbierta.set(promo)">Elegir sabores</button>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+</section>
+
+@if (promoAbierta(); as promo) {
+  <app-selector-sabores
+    [promo]="promo"
+    (cerrar)="promoAbierta.set(null)"
+    (confirmar)="agregarPromo(promo, $event)"
+  />
+}
+
+@if (aviso()) {
+  <div class="aviso"><app-icono nombre="check" [tamano]="18" /> {{ aviso() }}</div>
+}
+
+@if (carrito.cantidadTotal() > 0) {
+  <a routerLink="/carrito" class="btn btn-rosado flotante">
+    <app-icono nombre="carrito" [tamano]="18" />
+    Ver carrito ({{ carrito.cantidadTotal() }}) · {{ carrito.subtotal() | clp }}
+  </a>
+}

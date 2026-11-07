@@ -1,0 +1,102 @@
+<svg
+  [attr.width]="tamano()"
+  [attr.height]="tamano()"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  @switch (nombre()) {
+    @case ('copa') {
+      <path d="M13 6l2.5-4H18" />
+      <path d="M5 6h14l-1.6 14.2A2 2 0 0 1 15.4 22H8.6a2 2 0 0 1-2-1.8z" />
+      <path d="M6 11h12" />
+      <path d="M9.5 15l2-.5.5 2-2 .5z" />
+      <path d="M8 6c-.6-2 .4-3.6 2.6-4.2.6 2-.4 3.6-2.6 4.2z" />
+    }
+    @case ('carrito') {
+      <circle cx="9" cy="20" r="1.5" />
+      <circle cx="17" cy="20" r="1.5" />
+      <path d="M2 3h3l2.5 12h11l2-8H6.2" />
+    }
+    @case ('hoja') {
+      <path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z" />
+      <path d="M5 19l8-8" />
+    }
+    @case ('check') {
+      <circle cx="12" cy="12" r="10" />
+      <path d="M7.5 12.5l3 3 6-6.5" />
+    }
+    @case ('mensaje') {
+      <path d="M4 5h16v11H9l-5 4z" />
+      <path d="M8 9.5h8M8 12.5h5" />
+    }
+    @case ('cerrar') {
+      <path d="M6 6l12 12M18 6L6 18" />
+    }
+    @case ('mas') {
+      <path d="M12 5v14M5 12h14" />
+    }
+    @case ('menos') {
+      <path d="M5 12h14" />
+    }
+    @case ('ubicacion') {
+      <path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z" />
+      <circle cx="12" cy="10" r="2.5" />
+    }
+    @case ('gps') {
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+    }
+    @case ('buscar') {
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-4-4" />
+    }
+    @case ('usuario') {
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+    }
+    @case ('telefono') {
+      <rect x="7" y="2" width="10" height="20" rx="2" />
+      <path d="M11 18h2" />
+    }
+    @case ('casa') {
+      <path d="M3 11l9-8 9 8" />
+      <path d="M5 10v11h14V10" />
+      <path d="M10 21v-6h4v6" />
+    }
+    @case ('efectivo') {
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M6 9.5v5M18 9.5v5" />
+    }
+    @case ('transferencia') {
+      <path d="M4 8h14l-3-3" />
+      <path d="M20 16H6l3 3" />
+    }
+    @case ('tarjeta') {
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M2 10h20M6 15h4" />
+    }
+    @case ('nota') {
+      <path d="M5 3h10l4 4v14H5z" />
+      <path d="M14 3v5h5M8 13h8M8 17h5" />
+    }
+    @case ('despacho') {
+      <path d="M2 6h11v10H2z" />
+      <path d="M13 9h4l4 4v3h-8z" />
+      <circle cx="6" cy="18" r="2" />
+      <circle cx="17" cy="18" r="2" />
+    }
+    @case ('estrella') {
+      <path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4l-5.3 3 1.2-6-4.5-4.1 6-.7z" />
+    }
+    @case ('flecha') {
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    }
+  }
+</svg>

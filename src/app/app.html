@@ -1,11 +1,16 @@
 <header class="header">
   <div class="contenedor header-interno">
-    <a routerLink="/" class="logo">🍹 Mojo<span>jitos</span></a>
+    <a routerLink="/" class="logo">
+      <span class="logo-icono"><app-icono nombre="copa" [tamano]="22" /></span>
+      <span>Mojo<span class="lima">jitos</span></span>
+    </a>
 
     <nav class="nav">
-      <a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Menú</a>
-      <a routerLink="/carrito" class="btn-carrito">
-        🛒
+      <a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }"
+        >Menú</a
+      >
+      <a routerLink="/carrito" class="btn-carrito" aria-label="Carrito">
+        <app-icono nombre="carrito" [tamano]="26" />
         @if (carrito.cantidadTotal() > 0) {
           <span class="badge">{{ carrito.cantidadTotal() }}</span>
         }
@@ -20,6 +25,7 @@
 
 <footer class="footer">
   <div class="contenedor">
-    <p>© {{ anio }} {{ nombre }} · Pedidos por WhatsApp 💬</p>
+    <p>© {{ anio }} {{ nombre }} · Despacho en Pudahuel, Cerro Navia, Lo Prado y Maipú</p>
+    <p class="pie-whatsapp"><app-icono nombre="mensaje" [tamano]="16" /> Pedidos por WhatsApp</p>
   </div>
 </footer>

@@ -1,3 +1,5 @@
+@use 'leaflet/dist/leaflet';
+
 :root {
   --lima: #b7e84b;
   --rosado: #ff6b9a;
@@ -46,7 +48,9 @@ a {
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.15s, opacity 0.15s;
+  transition:
+    transform 0.15s,
+    opacity 0.15s;
 
   &:hover {
     transform: translateY(-2px);
@@ -101,13 +105,18 @@ a {
   button {
     width: 32px;
     height: 32px;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
     border: none;
     background: var(--negro);
     color: var(--lima);
-    font-size: 1.1rem;
-    font-weight: 800;
     cursor: pointer;
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
   }
 
   span {

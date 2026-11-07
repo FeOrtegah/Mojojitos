@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
 import { ItemCarrito, Producto } from '../models/producto';
 
-const CLAVE = 'mojojitos-carrito';
+const CLAVE_STORAGE = 'mojojitos-carrito-v2';
 
 @Injectable({ providedIn: 'root' })
 export class CarritoService {
@@ -16,37 +16,47 @@ export class CarritoService {
   );
 
   constructor() {
-    effect(() => localStorage.setItem(CLAVE, JSON.stringify(this.items())));
+    effect(() => localStorage.setItem(CLAVE_STORAGE, JSON.stringify(this.items())));
   }
 
-  agregar(producto: Producto): void {
-    const existe = this.items().some((i) => i.producto.id === producto.id);
-    if (existe) {
-      this.cambiarCantidad(producto.id, 1);
+  /** Para promociones se pasan los sabores elegidos */
+  agregar(producto: Producto, sabores?: string[]): void {
+    const ordenados = sabores ? [...sabores].sort() : undefined;
+    const clave = ordenados ? `${producto.id}:${ordenados.join('+')}` : producto.id;
+
+    if (this.items().some((i) => i.clave === clave)) {
+      this.cambiarCantidad(clave, 1);
     } else {
-      this.items.update((items) => [...items, { producto, cantidad: 1 }]);
+      this.items.update((items) => [
+        ...items,
+        { clave, producto, cantidad: 1, sabores: ordenados },
+      ]);
     }
   }
 
-  cambiarCantidad(id: number, delta: number): void {
+  cambiarCantidad(clave: string, delta: number): void {
     this.items.update((items) =>
       items
-        .map((i) => (i.producto.id === id ? { ...i, cantidad: i.cantidad + delta } : i))
+        .map((i) => (i.clave === clave ? { ...i, cantidad: i.cantidad + delta } : i))
         .filter((i) => i.cantidad > 0),
     );
   }
 
-  quitar(id: number): void {
-    this.items.update((items) => items.filter((i) => i.producto.id !== id));
+  quitar(clave: string): void {
+    this.items.update((items) => items.filter((i) => i.clave !== clave));
   }
 
   vaciar(): void {
     this.items.set([]);
   }
 
+  cantidadDe(clave: string): number {
+    return this.items().find((i) => i.clave === clave)?.cantidad ?? 0;
+  }
+
   private cargar(): ItemCarrito[] {
     try {
-      return JSON.parse(localStorage.getItem(CLAVE) ?? '[]');
+      return JSON.parse(localStorage.getItem(CLAVE_STORAGE) ?? '[]');
     } catch {
       return [];
     }

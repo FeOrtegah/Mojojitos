@@ -2,96 +2,201 @@
   <h1 class="titulo-pagina">Datos de <span>entrega</span></h1>
 
   @if (enviado()) {
-    <div class="exito">
-      <span>✅</span>
+    <div class="estado">
+      <span class="icono-estado"><app-icono nombre="check" [tamano]="56" /></span>
       <h2>¡Pedido listo!</h2>
-      <p>Se abrió WhatsApp con tu pedido. Solo presiona <strong>enviar</strong> para confirmarlo.</p>
+      <p>
+        Se abrió WhatsApp con tu pedido. Solo presiona <strong>enviar</strong> para confirmarlo.
+      </p>
       <div class="acciones">
         <button class="btn btn-borde" (click)="enviar()">Abrir WhatsApp de nuevo</button>
         <button class="btn btn-lima" (click)="nuevoPedido()">Hacer otro pedido</button>
       </div>
     </div>
   } @else if (carrito.items().length === 0) {
-    <div class="exito">
-      <span>🍃</span>
+    <div class="estado">
+      <span class="icono-estado"><app-icono nombre="hoja" [tamano]="56" /></span>
       <p>No tienes productos en el carrito.</p>
       <a routerLink="/" class="btn btn-lima">Ver menú</a>
     </div>
   } @else {
     <div class="layout">
       <form [formGroup]="form" (ngSubmit)="enviar()" class="formulario">
-        <div class="campo">
-          <label for="nombre">Nombre *</label>
-          <input id="nombre" formControlName="nombre" placeholder="¿A nombre de quién?" />
-          @if (invalido('nombre')) {
-            <small>Ingresa tu nombre</small>
-          }
+        <!-- Datos personales -->
+        <h2 class="seccion"><app-icono nombre="usuario" /> Tus datos</h2>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="nombre">Nombre *</label>
+            <input id="nombre" formControlName="nombre" placeholder="¿A nombre de quién?" />
+            @if (invalido('nombre')) {
+              <small>Ingresa tu nombre</small>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="telefono">Teléfono *</label>
+            <input
+              id="telefono"
+              type="tel"
+              formControlName="telefono"
+              placeholder="+56 9 1234 5678"
+            />
+            @if (invalido('telefono')) {
+              <small>Ingresa un teléfono válido</small>
+            }
+          </div>
+        </div>
+
+        <!-- Dirección -->
+        <h2 class="seccion"><app-icono nombre="ubicacion" /> Dirección de entrega</h2>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label for="comuna">Comuna *</label>
+            <div class="select">
+              <select id="comuna" formControlName="comuna">
+                <option value="" disabled>Elige tu comuna</option>
+                @for (comuna of comunas; track comuna.nombre) {
+                  <option [value]="comuna.nombre">{{ comuna.nombre }}</option>
+                }
+              </select>
+            </div>
+            @if (invalido('comuna')) {
+              <small>Elige tu comuna</small>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="referencia">Depto / referencia</label>
+            <input
+              id="referencia"
+              formControlName="referencia"
+              placeholder="Depto 4B, casa esquina…"
+            />
+          </div>
         </div>
 
         <div class="campo">
-          <label for="telefono">Teléfono *</label>
-          <input id="telefono" formControlName="telefono" placeholder="+56 9 1234 5678" />
-          @if (invalido('telefono')) {
-            <small>Ingresa un teléfono válido</small>
-          }
-        </div>
-
-        <div class="campo ancho">
           <label for="direccion">Dirección *</label>
-          <input id="direccion" formControlName="direccion" placeholder="Calle y número" />
+          <div class="con-boton">
+            <input id="direccion" formControlName="direccion" placeholder="Calle y número" />
+            <button
+              type="button"
+              class="btn btn-borde"
+              (click)="buscarDireccion()"
+              [disabled]="buscando()"
+            >
+              <app-icono nombre="buscar" [tamano]="18" /> Buscar
+            </button>
+          </div>
           @if (invalido('direccion')) {
             <small>Ingresa la dirección de entrega</small>
           }
         </div>
 
         <div class="campo">
-          <label for="comuna">Comuna *</label>
-          <input id="comuna" formControlName="comuna" placeholder="Ej: Maipú" />
-          @if (invalido('comuna')) {
-            <small>Ingresa la comuna</small>
+          <div class="mapa-cabecera">
+            <label>Marca tu casa en el mapa *</label>
+            <button type="button" class="link" (click)="usarMiUbicacion()" [disabled]="buscando()">
+              <app-icono nombre="gps" [tamano]="16" /> Usar mi ubicación
+            </button>
+          </div>
+
+          <app-mapa-despacho
+            [centro]="centroMapa()"
+            [ubicacion]="ubicacion()"
+            (ubicacionCambiada)="alCambiarUbicacion($event)"
+          />
+
+          @if (buscando()) {
+            <small class="info">Buscando…</small>
+          } @else if (mensajeUbicacion()) {
+            <small>{{ mensajeUbicacion() }}</small>
+          } @else if (!ubicacion()) {
+            <small [class.info]="!intentoEnviar()">
+              Busca tu dirección, usa tu ubicación o toca el mapa. Puedes arrastrar el marcador para
+              ajustarlo.
+            </small>
+          }
+
+          @if (ubicacion()) {
+            @if (despacho(); as d) {
+              <div class="despacho ok">
+                <app-icono nombre="despacho" />
+                <div>
+                  <strong>{{ d.zona }}</strong>
+                  <span>Despacho: {{ d.precio | clp }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="despacho fuera">
+                <app-icono nombre="ubicacion" />
+                <div>
+                  <strong>Fuera de la zona de reparto</strong>
+                  <span>Puedes enviar el pedido igual y coordinamos el despacho por WhatsApp.</span>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Pago -->
+        <h2 class="seccion"><app-icono nombre="efectivo" /> Método de pago</h2>
+
+        <div class="opciones">
+          @for (metodo of metodosPago; track metodo) {
+            <label class="opcion" [class.seleccionada]="form.controls.metodoPago.value === metodo">
+              <input type="radio" formControlName="metodoPago" [value]="metodo" />
+              <app-icono [nombre]="iconosPago[metodo]" />
+              {{ metodo }}
+            </label>
           }
         </div>
 
         <div class="campo">
-          <label for="referencia">Depto / referencia</label>
-          <input id="referencia" formControlName="referencia" placeholder="Depto 4B, casa esquina…" />
+          <label for="comentarios"><app-icono nombre="nota" [tamano]="16" /> Comentarios</label>
+          <textarea
+            id="comentarios"
+            formControlName="comentarios"
+            rows="3"
+            placeholder="Algo que debamos saber…"
+          ></textarea>
         </div>
 
-        <div class="campo ancho">
-          <label>Método de pago *</label>
-          <div class="opciones">
-            @for (metodo of metodosPago; track metodo) {
-              <label class="opcion" [class.seleccionada]="form.controls.metodoPago.value === metodo">
-                <input type="radio" formControlName="metodoPago" [value]="metodo" />
-                {{ metodo }}
-              </label>
-            }
-          </div>
-        </div>
-
-        <div class="campo ancho">
-          <label for="comentarios">Comentarios</label>
-          <textarea id="comentarios" formControlName="comentarios" rows="3" placeholder="Algo que debamos saber…"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-lima ancho enviar">💬 Enviar pedido por WhatsApp</button>
+        <button type="submit" class="btn btn-lima enviar">
+          <app-icono nombre="mensaje" /> Enviar pedido por WhatsApp
+        </button>
       </form>
 
       <aside class="resumen">
         <h2>Tu pedido</h2>
-        @for (item of carrito.items(); track item.producto.id) {
+        @for (item of carrito.items(); track item.clave) {
           <div class="fila">
-            <span>{{ item.cantidad }}x {{ item.producto.nombre }}</span>
+            <span>
+              {{ item.cantidad }}x {{ item.producto.nombre }}
+              @if (item.sabores?.length) {
+                <small>{{ item.sabores!.join(' + ') }}</small>
+              }
+            </span>
             <span>{{ item.producto.precio * item.cantidad | clp }}</span>
           </div>
         }
         <div class="fila">
           <span>Despacho</span>
-          <span>{{ despacho > 0 ? (despacho | clp) : 'Gratis' }}</span>
+          <span>
+            @if (despacho(); as d) {
+              {{ d.precio | clp }}
+            } @else if (ubicacion()) {
+              A coordinar
+            } @else {
+              Marca tu ubicación
+            }
+          </span>
         </div>
         <div class="fila total">
           <span>Total</span>
-          <span class="precio">{{ carrito.subtotal() + despacho | clp }}</span>
+          <span class="precio">{{ total() | clp }}</span>
         </div>
         <a routerLink="/carrito" class="editar">Editar carrito</a>
       </aside>

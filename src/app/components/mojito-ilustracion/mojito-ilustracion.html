@@ -1,0 +1,81 @@
+<svg viewBox="0 0 160 150" aria-hidden="true">
+  @for (v of posiciones(); track $index) {
+    <g [attr.transform]="v.transform" [attr.opacity]="v.opacidad">
+      <!-- Bombilla -->
+      <path d="M66 122 L84 6" stroke="#ff6b9a" stroke-width="6" stroke-linecap="round" />
+      <path d="M84 6 L96 6" stroke="#ff6b9a" stroke-width="6" stroke-linecap="round" />
+
+      <!-- Vidrio -->
+      <path
+        d="M30 30 H100 L92 132 Q91 140 84 140 H46 Q39 140 38 132 Z"
+        fill="rgba(255,255,255,0.06)"
+      />
+
+      <!-- Líquido -->
+      <path
+        d="M32.3 58 H97.7 L92 132 Q91 140 84 140 H46 Q39 140 38 132 Z"
+        [attr.fill]="color()"
+        opacity="0.9"
+      />
+      <path d="M32.3 58 H97.7" stroke="rgba(255,255,255,0.5)" stroke-width="3" />
+
+      <!-- Hielos -->
+      <rect
+        x="44"
+        y="70"
+        width="18"
+        height="18"
+        rx="4"
+        fill="rgba(255,255,255,0.35)"
+        transform="rotate(-12 53 79)"
+      />
+      <rect
+        x="66"
+        y="90"
+        width="18"
+        height="18"
+        rx="4"
+        fill="rgba(255,255,255,0.3)"
+        transform="rotate(10 75 99)"
+      />
+      <rect
+        x="46"
+        y="104"
+        width="16"
+        height="16"
+        rx="4"
+        fill="rgba(255,255,255,0.25)"
+        transform="rotate(-6 54 112)"
+      />
+
+      <!-- Burbujas -->
+      <circle cx="82" cy="72" r="3" fill="rgba(255,255,255,0.5)" />
+      <circle cx="88" cy="84" r="2" fill="rgba(255,255,255,0.4)" />
+      <circle cx="58" cy="128" r="2.5" fill="rgba(255,255,255,0.35)" />
+
+      <!-- Contorno del vaso -->
+      <path
+        d="M30 30 H100 L92 132 Q91 140 84 140 H46 Q39 140 38 132 Z"
+        fill="none"
+        stroke="rgba(255,255,255,0.75)"
+        stroke-width="3"
+        stroke-linejoin="round"
+      />
+
+      <!-- Hojas de menta -->
+      <path d="M44 32 C34 22 36 8 50 4 C56 16 54 26 44 32 Z" fill="#3fbf6a" />
+      <path d="M44 32 C46 22 48 14 50 4" stroke="#2a8f4c" stroke-width="2" fill="none" />
+      <path d="M52 32 C58 20 70 16 78 22 C72 32 62 36 52 32 Z" fill="#56d47e" />
+      <path d="M52 32 C60 26 68 23 78 22" stroke="#2a8f4c" stroke-width="2" fill="none" />
+
+      <!-- Rodaja de limón -->
+      <circle cx="100" cy="30" r="15" fill="#b7e84b" />
+      <circle cx="100" cy="30" r="11" fill="#d9f590" />
+      <path
+        d="M100 19 V41 M89 30 H111 M92.2 22.2 L107.8 37.8 M107.8 22.2 L92.2 37.8"
+        stroke="#b7e84b"
+        stroke-width="2"
+      />
+    </g>
+  }
+</svg>
