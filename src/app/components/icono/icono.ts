@@ -21,7 +21,10 @@ export type NombreIcono =
   | 'nota'
   | 'despacho'
   | 'estrella'
-  | 'flecha';
+  | 'flecha'
+  | 'flecha'
+  | 'reloj'
+  | 'calendario';;
 
 @Component({
   selector: 'app-icono',

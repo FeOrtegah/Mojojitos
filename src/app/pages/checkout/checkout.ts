@@ -12,6 +12,24 @@ import { Coordenadas, DatosEntrega, Despacho } from '../../models/producto';
 import { Icono, NombreIcono } from '../../components/icono/icono';
 import { MapaDespacho } from '../../components/mapa-despacho/mapa-despacho';
 
+/** Date -> 'yyyy-mm-dd' en hora local */
+function aFechaLocal(fecha: Date): string {
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  return `${fecha.getFullYear()}-${mes}-${dia}`;
+}
+
+/** '19:30' -> 1170 */
+function aMinutos(hora: string): number {
+  const [h, m] = hora.split(':').map(Number);
+  return h * 60 + m;
+}
+
+/** 1170 -> '19:30' */
+function aHora(minutos: number): string {
+  return `${String(Math.floor(minutos / 60)).padStart(2, '0')}:${String(minutos % 60).padStart(2, '0')}`;
+}
+
 @Component({
   selector: 'app-checkout',
   imports: [ReactiveFormsModule, RouterLink, ClpPipe, Icono, MapaDespacho],
@@ -40,6 +58,9 @@ export class Checkout {
     referencia: [''],
     metodoPago: [NEGOCIO.metodosPago[0], Validators.required],
     comentarios: [''],
+    tipoEntrega: ['ahora'],
+    fecha: [''],
+    hora: [''],
   });
 
   // --- Ubicación y despacho ---
@@ -71,6 +92,57 @@ export class Checkout {
   protected readonly total = computed(
     () => this.carrito.subtotal() + (this.despacho()?.precio ?? 0),
   );
+
+  // --- Pedidos programados ---
+  private readonly reservas = NEGOCIO.reservas;
+  protected readonly fechaMinima = aFechaLocal(new Date());
+  protected readonly fechaMaxima = aFechaLocal(
+    new Date(Date.now() + this.reservas.diasMaximos * 24 * 60 * 60 * 1000),
+  );
+
+  protected readonly tipoEntrega = toSignal(this.form.controls.tipoEntrega.valueChanges, {
+    initialValue: 'ahora',
+  });
+  private readonly fechaElegida = toSignal(this.form.controls.fecha.valueChanges, {
+    initialValue: '',
+  });
+  private readonly horaElegida = toSignal(this.form.controls.hora.valueChanges, {
+    initialValue: '',
+  });
+
+  /** Horarios que se pueden elegir para el día seleccionado */
+  protected readonly horasDisponibles = computed(() => {
+    const fecha = this.fechaElegida();
+    if (!fecha) return [];
+
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    if (this.reservas.diasCerrado.includes(new Date(anio, mes - 1, dia).getDay())) return [];
+
+    const ahora = new Date();
+    const minimo =
+      fecha === aFechaLocal(ahora)
+        ? ahora.getHours() * 60 + ahora.getMinutes() + this.reservas.anticipacionMinutos
+        : 0;
+
+    const horas: string[] = [];
+    for (
+      let t = aMinutos(this.reservas.apertura);
+      t < aMinutos(this.reservas.cierre);
+      t += this.reservas.intervaloMinutos
+    ) {
+      if (t >= minimo) horas.push(aHora(t));
+    }
+    return horas;
+  });
+
+  /** Mensaje de error del pedido programado ('' si está todo bien) */
+  protected readonly errorProgramado = computed(() => {
+    if (this.tipoEntrega() !== 'programado') return '';
+    if (!this.fechaElegida()) return 'Elige el día de entrega';
+    if (this.horasDisponibles().length === 0) return 'No quedan horarios ese día, elige otro';
+    if (!this.horasDisponibles().includes(this.horaElegida())) return 'Elige la hora de entrega';
+    return '';
+  });
 
   invalido(campo: keyof DatosEntrega): boolean {
     const control = this.form.controls[campo];
@@ -131,7 +203,12 @@ export class Checkout {
 
   enviar(): void {
     this.intentoEnviar.set(true);
-    if (this.form.invalid || !this.ubicacion() || this.carrito.items().length === 0) {
+    if (
+      this.form.invalid ||
+      !this.ubicacion() ||
+      this.errorProgramado() ||
+      this.carrito.items().length === 0
+    ) {
       this.form.markAllAsTouched();
       return;
     }

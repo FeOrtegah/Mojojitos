@@ -35,6 +35,12 @@ export interface DatosEntrega {
   referencia: string;
   metodoPago: string;
   comentarios: string;
+  /** 'ahora' = lo antes posible, 'programado' = reserva */
+  tipoEntrega: string;
+  /** yyyy-mm-dd (solo pedidos programados) */
+  fecha: string;
+  /** HH:mm (solo pedidos programados) */
+  hora: string;
 }
 
 export interface Despacho {

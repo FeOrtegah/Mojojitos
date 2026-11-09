@@ -8,12 +8,32 @@ export class WhatsappService {
     return '$' + valor.toLocaleString('es-CL');
   }
 
+  /** '2026-11-15' -> 'sábado 15/11' */
+  private formatearFecha(fecha: string): string {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    const nombreDia = new Date(anio, mes - 1, dia).toLocaleDateString('es-CL', { weekday: 'long' });
+    return `${nombreDia} ${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}`;
+  }
+
   armarMensaje(items: ItemCarrito[], datos: DatosEntrega, despacho: Despacho | null): string {
     const subtotal = items.reduce((s, i) => s + i.producto.precio * i.cantidad, 0);
     const costoDespacho = despacho?.precio ?? 0;
+    const programado = datos.tipoEntrega === 'programado';
 
-    const lineas = [`*Nuevo pedido - ${NEGOCIO.nombre}*`, '', '*Productos:*'];
+    const lineas: string[] = [
+      programado ? `*Pedido programado - ${NEGOCIO.nombre}*` : `*Nuevo pedido - ${NEGOCIO.nombre}*`,
+      '',
+    ];
 
+    if (programado) {
+      lineas.push(
+        `*Entrega:* ${this.formatearFecha(datos.fecha)} a las ${datos.hora}`,
+        '_(Por confirmar)_',
+        '',
+      );
+    }
+
+    lineas.push('*Productos:*');
     for (const item of items) {
       const sabores = item.sabores?.length ? ` (${item.sabores.join(' + ')})` : '';
       lineas.push(
@@ -23,15 +43,13 @@ export class WhatsappService {
 
     lineas.push('', `Subtotal: ${this.formatearPrecio(subtotal)}`);
     lineas.push(
-      despacho
-        ? `Despacho (${despacho.zona}): ${this.formatearPrecio(despacho.precio)}`
-        : 'Despacho: a coordinar (fuera de zona)',
+      despacho ? `Despacho: ${this.formatearPrecio(despacho.precio)}` : 'Despacho: a coordinar',
     );
     lineas.push(`*Total: ${this.formatearPrecio(subtotal + costoDespacho)}*`);
 
     lineas.push(
       '',
-      '*Entrega:*',
+      '*Datos de entrega:*',
       `Nombre: ${datos.nombre}`,
       `Teléfono: ${datos.telefono}`,
       `Dirección: ${datos.direccion}, ${datos.comuna}`,

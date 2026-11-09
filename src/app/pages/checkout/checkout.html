@@ -4,10 +4,18 @@
   @if (enviado()) {
     <div class="estado">
       <span class="icono-estado"><app-icono nombre="check" [tamano]="56" /></span>
-      <h2>¡Pedido listo!</h2>
-      <p>
-        Se abrió WhatsApp con tu pedido. Solo presiona <strong>enviar</strong> para confirmarlo.
-      </p>
+      @if (tipoEntrega() === 'programado') {
+        <h2>¡Pedido programado listo!</h2>
+        <p>
+          Se abrió WhatsApp con tu pedido. Presiona <strong>enviar</strong> y te confirmaremos el
+          horario por ese mismo chat.
+        </p>
+      } @else {
+        <h2>¡Pedido listo!</h2>
+        <p>
+          Se abrió WhatsApp con tu pedido. Solo presiona <strong>enviar</strong> para confirmarlo.
+        </p>
+      }
       <div class="acciones">
         <button class="btn btn-borde" (click)="enviar()">Abrir WhatsApp de nuevo</button>
         <button class="btn btn-lima" (click)="nuevoPedido()">Hacer otro pedido</button>
@@ -141,6 +149,58 @@
           }
         </div>
 
+        <!-- Cuándo -->
+        <h2 class="seccion"><app-icono nombre="reloj" /> ¿Cuándo lo quieres?</h2>
+
+        <div class="opciones">
+          <label class="opcion" [class.seleccionada]="tipoEntrega() === 'ahora'">
+            <input type="radio" formControlName="tipoEntrega" value="ahora" />
+            <app-icono nombre="despacho" /> Lo antes posible
+          </label>
+          <label class="opcion" [class.seleccionada]="tipoEntrega() === 'programado'">
+            <input type="radio" formControlName="tipoEntrega" value="programado" />
+            <app-icono nombre="calendario" /> Programar
+          </label>
+        </div>
+
+        @if (tipoEntrega() === 'programado') {
+          <div class="fila-campos">
+            <div class="campo">
+              <label for="fecha">Día *</label>
+              <input
+                id="fecha"
+                type="date"
+                formControlName="fecha"
+                [min]="fechaMinima"
+                [max]="fechaMaxima"
+              />
+            </div>
+
+            <div class="campo">
+              <label for="hora">Hora *</label>
+              <div class="select">
+                <select id="hora" formControlName="hora">
+                  <option value="" disabled>
+                    {{ horasDisponibles().length ? 'Elige la hora' : 'Primero elige el día' }}
+                  </option>
+                  @for (hora of horasDisponibles(); track hora) {
+                    <option [value]="hora">{{ hora }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+
+          @if (intentoEnviar() && errorProgramado()) {
+            <small class="error">{{ errorProgramado() }}</small>
+          }
+
+          <p class="aviso-programado">
+            <app-icono nombre="mensaje" [tamano]="16" />
+            Tu pedido programado queda confirmado cuando te respondamos por WhatsApp.
+          </p>
+        }
+
         <!-- Pago -->
         <h2 class="seccion"><app-icono nombre="efectivo" /> Método de pago</h2>
 
@@ -165,7 +225,12 @@
         </div>
 
         <button type="submit" class="btn btn-lima enviar">
-          <app-icono nombre="mensaje" /> Enviar pedido por WhatsApp
+          <app-icono nombre="mensaje" />
+          {{
+            tipoEntrega() === 'programado'
+              ? 'Programar pedido por WhatsApp'
+              : 'Enviar pedido por WhatsApp'
+          }}
         </button>
       </form>
 
